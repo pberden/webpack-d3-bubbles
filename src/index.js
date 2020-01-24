@@ -105,30 +105,59 @@ function bubbleChart() {
       .attr('width', width)
       .attr('height', height);
 
+    // var node = svg.selectAll('.node')
+    //   .data(pack.nodes(flatten(json))
+    //     .filter(function (d) { return !d.children; }))
+    //   .enter().append('g')
+    //   .attr('class', 'node')
+    //   .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+
+    // node.append('circle')
+    //   .attr('r', function (d) { return d.r; });
+
+    // node.append('text')
+    //   .text(function (d) { return d.name; })
+    //   .style('font-size', function (d) { return Math.min(2 * d.r, (2 * d.r - 8) / this.getComputedTextLength() * 24) + 'px'; })
+    //   .attr('dy', '.35em');
+
     // Bind nodes data to what will become DOM elements to represent them.
     bubbles = svg.selectAll('.bubble')
-      .data(nodes, function (d) { return d.id; });
+      .data(nodes, function (d) { return d.name; });
 
     // Create new circle elements each with class `bubble`.
     // There will be one circle.bubble for each object in the nodes array.
     // Initially, their radius (r attribute) will be 0.
     // @v4 Selections are immutable, so lets capture the
     //  enter selection to apply our transtition to below.
-    var bubblesE = bubbles.enter().append('circle')
-      .classed('bubble', true)
-      .attr('r', 0)
+    var bubblesE = bubbles.enter().append('g')
+      .classed('bubble', true);
+
+    bubblesE.append('circle')
+      .attr('r', 10)
       .attr('fill', function (d) { return fillColor(d.theme); })
       .attr('stroke', function (d) { return d3.rgb(fillColor(d.theme)).darker(); })
       .attr('stroke-width', 2);
 
+    bubblesE.append('text')
+      .text(function (d) { return d.name; })
+      .style('font-size', function (d) { return Math.min(2 * d.radius, (2 * d.radius - 8) / this.getComputedTextLength() * 24) + 'px'; })
+      .attr('dy', '.35em')
+      .attr('fill-opacity', 0);
+
     // @v4 Merge the original empty selection and the enter selection
     bubbles = bubbles.merge(bubblesE);
 
-    // Fancy transition to make bubbles appear, ending with the
-    // correct radius
-    bubbles.transition()
+    // Fancy transition to make bubbles appear, ending with the correct radius
+    bubbles.select('circle')
+      .transition()
       .duration(2000)
       .attr('r', function (d) { return d.radius; });
+
+    // Fancy transition to make text appear
+    bubbles.select('text')
+      .transition()
+      .duration(2000)
+      .attr('fill-opacity', 1);
 
     // Set the simulation's nodes to our newly created nodes array.
     // @v4 Once we set the nodes, the simulation will start running automatically!
@@ -147,12 +176,12 @@ function bubbleChart() {
    */
   function ticked() {
     bubbles
-      .attr('cx', function (d) { return d.x; })
-      .attr('cy', function (d) { return d.y; });
+      .attr('transform', function (d) { return 'translate(' + d.x + ',' + d.y + ')'; });
   }
 
+
   /*
-   * Sets visualization in "single group mode".
+   * Sets visualization in 'single group mode'.
    * The year labels are hidden and the force layout
    * tick function is set to move all nodes to the
    * center of the visualization.
@@ -178,9 +207,9 @@ var myBubbleChart = bubbleChart();
   try {
     var res = await fetch('./data/data.json')
     var data = await res.json();
-  
+
     myBubbleChart('body', data);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 })();
