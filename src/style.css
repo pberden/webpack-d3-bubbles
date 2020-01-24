@@ -1,0 +1,15 @@
+html {
+  margin: 0;
+  padding: 0;
+}
+
+svg {
+  width: 100%;
+  background-color: antiquewhite;
+}
+
+text {
+  font: 24px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  pointer-events: none;
+}
