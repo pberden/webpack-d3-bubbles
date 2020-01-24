@@ -5,10 +5,11 @@ function bubbleChart() {
   // Constants for sizing
   var width = 940;
   var height = 600;
-  var center = { x: width / 2, y: height / 2 };
+  var center = { x: width / 3, y: height / 2 };
+  var radius = 22;
 
   // @v4 strength to apply to the position forces
-  var forceStrength = 0.03;
+  var forceStrength = 0.5;
 
   // These will be set in create_nodes and create_vis
   var svg = null;
@@ -65,16 +66,15 @@ function bubbleChart() {
    * array for each element in the rawData input.
    */
   function createNodes(rawData) {
-    console.log('asdf', rawData);
     var myNodes = rawData.map((d) => {
       return {
         id: d.id,
-        radius: 20,
-        name: 'Naam project',
+        radius: radius,
+        name: d.name,
         theme: d.theme,
         tag: d.tag,
-        x: Math.random() * 900,
-        y: Math.random() * 800
+        x: Math.random() * width,
+        y: Math.random() * height
       };
     });
 
@@ -150,15 +150,6 @@ function bubbleChart() {
       .attr('cx', function (d) { return d.x; })
       .attr('cy', function (d) { return d.y; });
   }
-
-  /*
-   * Provides a x value for each node to be used with the split by year
-   * x force.
-   */
-  function nodeYearPos(d) {
-    return yearCenters[d.year].x;
-  }
-
 
   /*
    * Sets visualization in "single group mode".
